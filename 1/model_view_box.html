@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>model_box</title>
+</head>
+<body>
+    
+    
+    <div >
+      <button id="load_btn" onclick="change_model()">Load</button>
+
+        <model-viewer 
+         id="viewbox"
+        bounds="tight" 
+       
+        src="" 
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-orbit="-60deg 110deg 2m"
+        interpolation-decay="200" 
+        poster="poster.webp" 
+      
+        exposure="0.3"
+        camera-controls 
+        auto-rotate
+        min-camera-orbit='auto auto 15%'
+        max-camera-orbit='auto auto 40%'
+        min-field-of-view='110deg'
+        max-field-of-view='100deg'
+        skybox-image= '../dot_texture2.png'
+        environment-image="neutral"
+        >
+            
+            <div class="progress-bar hide" slot="progress-bar">
+                <div class="update-bar"></div>
+            </div>
+            <div id="lazy-load-poster" slot="poster"></div>
+          
+        </model-viewer>
+        
+    </div>
+
+   
+    <script>
+      //Change Model___
+        const models = ['model.glb'];
+       const toggleModel = document.querySelector('#viewbox');
+       const button_text = document.querySelector('#load_btn');
+
+       let j = 0;
+       async function change_model() {
+        toggleModel.setAttribute('src', `${models[j++ % 1]}`)
+        button_text.innerHTML = j % 1 + ' of 1';
+        if (j%1 == 0) {
+          button_text.innerHTML = 'final'
+        }
+
+       }
+       //__________________________
+       //___
+        (() => {
+          const modelViewer = document.querySelector('#viewbox');
+          const orbitCycle = [
+            '-60deg 110deg 2m',
+            '61deg 110deg 2m',
+            modelViewer.cameraOrbit
+          ];
+        
+          setInterval(() => {
+            const currentOrbitIndex = orbitCycle.indexOf(modelViewer.cameraOrbit);
+            modelViewer.cameraOrbit =
+                orbitCycle[(currentOrbitIndex + 1) % orbitCycle.length];
+          }, 3000);
+        })();
+        </script>
+</body>
+<style>
+
+
+    #load_btn {
+      background-image: url("../images/text_screen_level_ui.png");
+      background-size:contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      border: 0px;
+      background-color: rgba(51, 68, 51, 0);
+      width: 100%;
+      height: 48px;
+      cursor:pointer;
+      color: white;
+      
+    }
+    #viewbox {
+        border: 0px solid black;
+        border-radius: 6px;
+        width: 100%;
+        height: 500px;
+     
+        
+    }
+     #lazy-load-poster {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-image: url("../images/screen.png");
+   background-size:contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+</style>
+</html>
